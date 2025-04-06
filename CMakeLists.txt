@@ -11,8 +11,6 @@ include_directories(extern/haikalxx/inc)
 # include_directories(extern/saha/src)
 add_executable(${PROJECT_NAME}
     src/main.cpp
-    src/fileops.c
-    src/Component.c
 )
 # add_subdirectory(extern) # in case of modules...
 
