@@ -1,9 +1,7 @@
 # c-init
 C++ programming template
 # Synopsis
-Don't wanna use STL and RAII.
-haikalxx is a templated data structures library that uses arena allocation.
-haikalxx is based on [haikal](https://github.com/IbrahimHindawi/haikal) which is built with C and C++ compatible.
+This repo is a template project to use with [haikal](https://github.com/IbrahimHindawi/haikal) or [haikalxx](https://github.com/IbrahimHindawi/haikalxx)
 # how to run:
 - initalize `cl.exe` using `x64 Native Tools Command Prompt for VS 2019`
 - run `git submodule update --init --recursive`
