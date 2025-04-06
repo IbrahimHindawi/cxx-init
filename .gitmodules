@@ -7,3 +7,6 @@
 [submodule "extern/saha"]
 	path = extern/saha
 	url = https://github.com/IbrahimHindawi/saha
+[submodule "extern/haikalxx"]
+	path = extern/haikalxx
+	url = https://github.com/IbrahimHindawi/haikalxx

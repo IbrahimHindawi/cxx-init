@@ -21,7 +21,9 @@
 // haikal@Array:voidptr:p
 // haikal@Array:i8:p
 // haikal@Array:i32:p
+// haikal@Array:f32:p
 // haikal@Map:i32:p
+// haikal@Map:u64:p
 // haikal@Node:i32:p
 // haikal@List:i32:p
 // haikal@BiNode:i32:p
@@ -33,13 +35,16 @@
 //---------------------------------------------------------------------------------------------------
 // haikal@Array:List_i32:s
 // haikal@Array:vec3:s
-// haikal@Array:Rec:s
+// haikal@Array:vec4:s
 // haikal@Map:vec3:s
-// haikal@Map:Rec:s
 // haikal@Map:Array_i8:s
 // haikal@Map:Array_i32:s
-// @Array:TaggedArchetype:s
+//---------------------------------------------------------------------------------------------------
+// unions
+//---------------------------------------------------------------------------------------------------
 
+#include <stdio.h>
+#include <string.h>
 #define CORE_IMPL
 #include <core.h>
 
@@ -51,10 +56,8 @@
 #include <List.h>
 #include <BiNode.h>
 #include <DList.h>
-#include <Stack.h>
 #include <Queue.h>
-
-#include "Rec.h"
+#include <Stack.h>
 #include <Map.h>
 
 // #include "archetype.h"
@@ -96,14 +99,14 @@ void Array_test(Arena *arena) {
     for (i32 i = 0; i < arr.length; ++i) { printf("arr[%d] = %d\n", i, arr.data[i]); }
     arr.length = 0;
     for (i32 i = 0; i < arr.length; ++i) { printf("arr[%d] = %d\n", i, arr.data[i]); }
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
-    Array_i8_append(arena, &arr, 0xBA);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
+    Array_i8_append(arena, &arr, 0x13);
     for (i32 i = 0; i < arr.length; ++i) { printf("arr[%d] = %d\n", i, arr.data[i]); }
     Array_i8_destroy(arena, &arr);
     printf("\n");
@@ -111,7 +114,6 @@ void Array_test(Arena *arena) {
 
 void List_test(Arena *arena) {
     printf("List_test:\n");
-    printf("----------------------------\n");
     List_i32 loi = {0};
     Node_i32 *node = NULL;
     List_i32_append(arena, &loi, 11);
@@ -147,13 +149,13 @@ void List_test(Arena *arena) {
 
     printf("Array_List_i32:\n");
     Array_List_i32 arrayoflists = {0};
-    List_i32 *list = Array_List_i32_append(arena, &arrayoflists, (List_i32) {0});
+    List_i32 *list = Array_List_i32_append(arena, &arrayoflists, List_i32{});
     if (!list) { printf("list invalid!\n"); }
     List_i32_append(arena, list, 32);
     List_i32_append(arena, list, 22);
     List_i32_append(arena, list, 12);
     List_i32_print(arena, list);
-    list = Array_List_i32_append(arena, &arrayoflists, (List_i32) {0});
+    list = Array_List_i32_append(arena, &arrayoflists, List_i32{});
     if (!list) { printf("list invalid!\n"); }
     List_i32_append(arena, list, 16);
     List_i32_append(arena, list, 26);
@@ -191,6 +193,7 @@ void DList_test(Arena *arena) {
 void Queue_test(Arena *arena) {
     printf("Queue_test:\n");
     printf("----------------------------\n");
+
     Queue_i32 *q = Queue_i32_create(arena);
     Queue_i32_print(arena, q);
     Queue_i32_enqueue(arena, q, 0);
@@ -268,7 +271,7 @@ void Stack_test(Arena *arena) {
 
 void Map_test(Arena *arena) {
     printf("Map_test:\n");
-    printf("----------------------------\n");
+    puts("");
     printf("Map_i32:\n");
     Map_i32 *hashmap = Map_i32_create(arena);
     printf("hashmap length = %llu\n", Map_i32_length(arena, hashmap));
@@ -295,12 +298,12 @@ void Map_test(Arena *arena) {
         printf("nomem\n");
         exit(-1);
     }
-    if (!Map_vec3_set(arena, hashmapvec, "dog", (vec3){1.f, 0.f, 0.f})) {
+    if (!Map_vec3_set(arena, hashmapvec, "dog", vec3{1.f, 0.f, 0.f})) {
         printf("nomem\n");
         exit(-1);
     }
     printf("hashmapvec length = %llu\n", Map_vec3_length(arena, hashmapvec));
-    if (!Map_vec3_set(arena, hashmapvec, "frog", (vec3){0.f, 1.f, 0.f})) {
+    if (!Map_vec3_set(arena, hashmapvec, "frog", vec3{0.f, 1.f, 0.f})) {
         printf("nomem\n");
         exit(-1);
     }
@@ -322,7 +325,7 @@ void Map_test(Arena *arena) {
     Map_Array_i32 *hashmaparray = Map_Array_i32_create(arena);
     Array_i32 *resultarray = Map_Array_i32_get(arena, hashmaparray, "dog");
     if (!resultarray) {
-        Map_Array_i32_set(arena, hashmaparray, "dog", (Array_i32) {0});
+        Map_Array_i32_set(arena, hashmaparray, "dog", Array_i32{0});
         resultarray = Map_Array_i32_get(arena, hashmaparray, "dog");
     }
     printf("key = %s, val = %p", "dog", resultarray);
@@ -345,15 +348,13 @@ void Map_test(Arena *arena) {
     printf("\n");
 }
 
-typedef struct Payload Payload;
-struct Payload {
+structdef(Payload) {
     i32 id;
     i32 mx;
     char *str;
 };
 
-typedef struct vec4i8 vec4i8;
-struct vec4i8 { i8 x; i8 y; i8 z; i8 w; };
+structdef(vec4i8) { i8 x; i8 y; i8 z; i8 w; };
 
 void Arena_test(Arena *arena) {
     printf("Arena_test:\n");
@@ -362,7 +363,7 @@ void Arena_test(Arena *arena) {
     // arenaInit(arena);
 
     const i32 len = 4;
-    f32 *nums = arenaPushArray(arena, i32, len);
+    f32 *nums = (f32 *)arenaPushArray(arena, i32, len);
     for (i32 i = 0; i < len; ++i) {
         nums[i] = (f32)(i + 1);
     }
@@ -392,19 +393,26 @@ void Arena_test(Arena *arena) {
     printf("%s\n", str1);
     printf("%s\n", str2);
 
-    Payload *pld = arenaPushStruct(arena, Payload);
+    Payload *pld = (Payload *)arenaPushStruct(arena, Payload);
     pld->id = 0xDEADBEEF;
     pld->mx = 0xCAFEBABE;
     pld->str = "Name0";
     arenaPop(arena, sizeof(Payload));
-    pld = arenaPushStruct(arena, Payload);
+    pld = (Payload *)arenaPushStruct(arena, Payload);
     pld->id = 0xFFFFFFFF;
     pld->mx = 0xFFFFFFFF;
     pld->str = "Name0";
     arenaPop(arena, sizeof(Payload));
 
     arenaSetPos(arena, pos);
-    nums = arenaPushArray(arena, i32, len);
+    i8 *x = (i8 *)arenaPush(arena, sizeof(i8), haikal_alignof(i8));
+    *x = 0x13;
+
+    arenaPop(arena, sizeof(Payload));
+
+
+    arenaSetPos(arena, pos);
+    nums = (f32 *)arenaPushArray(arena, i32, len);
     for (i32 i = 0; i < len; ++i) {
         nums[i] = (f32)(i + 1);
     }
@@ -413,12 +421,12 @@ void Arena_test(Arena *arena) {
 
     // vec4i8 *vs = arenaPushArrayZero(&arena, vec4i8, 32);
     const i32 npts = 32;
-    vec4i8 *vs = arenaPushArray(arena, vec4i8, npts);
+    vec4i8 *vs = (vec4i8 *)arenaPushArray(arena, vec4i8, npts);
     for (i32 i = 0; i < npts; ++i) {
-        vs[i].x = 0xAA;
-        vs[i].y = 0xBB;
-        vs[i].z = 0xCC;
-        vs[i].w = 0xDD;
+        vs[i].x = 0x10;
+        vs[i].y = 0x11;
+        vs[i].z = 0x12;
+        vs[i].w = 0x13;
     }
     arenaPopArray(arena, vec4i8, npts);
 
@@ -469,14 +477,8 @@ i32 main(i32 argc, char *argv[]) {
     Stack_test(&arena);
     Arena_test(&arena);
     // Archetype_test();
+    printf("haikal test end...\n");
     printf("----------------------------\n");
-    printf("haikal test end.\n");
-
-    // char buffer[12];
-    // int k = -120;
-    // itos(k, buffer);
-    // printf("itos = %s\n", buffer);
-
     // TODO: fix code gen for external files
     // for this to work, we need to read all the included files
     // compile_commands.json should be enough...
@@ -491,10 +493,10 @@ i32 main(i32 argc, char *argv[]) {
 }
 
 #include <Array.c>
+#include <Node.c>
+#include <List.c>
 #include <BiNode.c>
 #include <DList.c>
-#include <Map.c>
-#include <List.c>
-#include <Node.c>
-#include <Stack.c>
 #include <Queue.c>
+#include <Stack.c>
+#include <Map.c>
